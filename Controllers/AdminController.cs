@@ -39,6 +39,14 @@ namespace Ispit.Books.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                   string t = error.ErrorMessage;
+                }
+            }
             return View(book);
         }
 
@@ -92,10 +100,12 @@ namespace Ispit.Books.Controllers
             {
                 return NotFound();
             }
+            ViewData["Authors"] = _context.Authors.ToList();
+            ViewData["Publishers"] = _context.Publishers.ToList();
             return View(book);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var book = await _context.Books.FindAsync(id);
